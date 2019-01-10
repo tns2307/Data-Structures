@@ -81,7 +81,6 @@ int main(){
 	char name[100];
 	do{
 		system("cls");
-		
 		view();
 		printf("XXI Movie Center\n");
 		printf("================\n");
