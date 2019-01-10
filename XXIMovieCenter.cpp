@@ -64,6 +64,12 @@ void pop(){
 	}
 }
 
+void popAll(){
+	while(head!=NULL){
+		pop();
+	}
+}
+
 void view(){
 	printf("Movie Title      :  Duration (minutes)\n");
 	if(head!=NULL){
@@ -107,6 +113,9 @@ int main(){
 				break;
 			case 2:
 				pop();
+				break;
+			case 3:
+				popAll();
 				break;
 		}
 	}while(menu!=3);
