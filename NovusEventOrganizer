@@ -47,16 +47,13 @@ void push(char name[], char city[], int year){
 	}
 }
 
-void pop(){
+struct Event pop(){
+	struct Event deleted = {"NULL", "NULL", -1};
 	if(!head){
-		printf("There is no event available...\n");
+		return deleted;
 	}
 	else{
-		printf("Removed Data : \n");
-		printf("Event Name : %s\n", tail->name);
-		printf("Event City : %s\n", tail->city);
-		printf("Event Year : %d\n", tail->year);
-
+		struct Event deleted = *tail;
 		if(!head->next){
 			free(head);
 			head = tail = NULL;
@@ -66,8 +63,8 @@ void pop(){
 			free(tail->next);
 			tail->next = NULL;
 		}
+		return deleted;
 	}
-	getchar();
 }
 
 void view(){
@@ -146,7 +143,17 @@ int main(){
 				break;
 				
 			case 3:
-				pop();
+				struct Event deleted = pop();
+				printf("Removed Data : \n");
+//				if(deleted){
+					printf("Event Name : %s\n", deleted.name);
+					printf("Event City : %s\n", deleted.city);
+					printf("Event Year : %d\n", deleted.year);	
+//				}
+//				else{
+//					printf("There is no event available...\n");
+//				}
+				getchar();
 				break;
 		}
 	}while(menu != 4);
