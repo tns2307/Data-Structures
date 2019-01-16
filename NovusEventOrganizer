@@ -1,0 +1,159 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Event{
+	char name[31];
+	char city[9];
+	int year;
+	struct Event *prev, *next;
+}*head, *tail, *curr;
+
+struct Event *newData(char name[], char city[], int year){
+	struct Event *temp = (struct Event*)malloc(sizeof(struct Event));
+	strcpy(temp->name, name);
+	strcpy(temp->city, city);
+	temp->year = year;
+	temp->prev = temp->next = NULL;
+	return temp;
+}
+
+void push(char name[], char city[], int year){
+	struct Event *temp = newData(name, city, year);
+	if(!head){
+		head = tail = temp;
+	}
+	else{
+		if(temp->year > head->year){
+			temp->next = head;
+			head = temp;
+		}
+		else if(temp->year <= tail->year){
+			tail->next = temp;
+			temp->prev = tail;
+			tail = temp;
+		}
+		else{
+			curr = head;
+			while(curr->year >= temp->year){
+				curr = curr->next;
+			}
+			//prev temp curr
+			temp->next = curr;
+			temp->prev = curr->prev;
+			curr->prev->next = temp;
+			curr->prev = temp;
+		}
+	}
+}
+
+void pop(){
+	if(!head){
+		printf("There is no event available...\n");
+	}
+	else{
+		printf("Removed Data : \n");
+		printf("Event Name : %s\n", tail->name);
+		printf("Event City : %s\n", tail->city);
+		printf("Event Year : %d\n", tail->year);
+
+		if(!head->next){
+			free(head);
+			head = tail = NULL;
+		}
+		else{
+			tail = tail->prev;
+			free(tail->next);
+			tail->next = NULL;
+		}
+	}
+	getchar();
+}
+
+void view(){
+	if(head){
+		curr = head;
+		printf("%-30s %-10s %s\n", "Event Name", "Event City", "Event Year");
+		while(curr){
+			printf("%-30s %-10s %d\n", curr->name, curr->city, curr->year);
+			curr = curr->next;
+		}
+	}
+	else{
+		printf("There is no event available...\n");
+	}
+	getchar();
+}
+
+void pop_all(){
+	while(head){
+		pop();
+	}
+}
+
+int main(){
+	char name[31], city[9];
+	char city_list[][10] = {"Jakarta", "Bandung", "Semarang"};
+	int menu, year;
+	
+	do{
+		system("cls");
+		printf ("1. View Event List\n"
+				"2. Register New Event\n"
+				"3. Remove Oldest Event\n"
+				"4. Exit\n");
+		do{
+			printf(">> ");
+			scanf("%d", &menu); getchar();	
+		}while(menu < 1||menu > 4);
+		
+		switch(menu){
+			case 1:
+				system("cls");
+				view();
+				break;
+				
+			case 2:
+				int length;
+				do{
+					printf("Input event name [8-30]: ");
+					scanf("%[^\n]", &name); getchar();	
+					length = strlen(name);
+				}while(length<8||length>30);
+				
+				do{
+					printf("Input event year [2000-2015]: ");
+					scanf("%d", &year); getchar();
+				}while(year<2000||year>2015);
+				
+				bool valid_city;
+				do{
+					strcpy(city, "");
+					printf("Input event city [Jakarta/Bandung/Semarang]: ");
+					scanf("%[^\n]", &city); getchar();
+					valid_city = false;
+					for (int i = 0; i < 3; i++){
+						if(strcmp(city, city_list[i])==0){
+							valid_city = true;
+							break;	
+						} 
+					}
+				}while(!valid_city);
+				
+				push(name, city, year);
+				printf("Data has been added!\n");
+				getchar();
+				break;
+				
+			case 3:
+				pop();
+				break;
+		}
+	}while(menu != 4);
+	
+	pop_all();
+	printf("All data has been deleted...\n");
+	printf("Exiting program...\n");
+	getchar();
+	return 0;
+}
