@@ -21,24 +21,30 @@ struct Event *newData(char name[], char city[], int year){
 void push(char name[], char city[], int year){
 	struct Event *temp = newData(name, city, year);
 	if(!head){
+		//Kalo kosong
 		head = tail = temp;
 	}
 	else{
 		if(temp->year > head->year){
+			//Kalo lebih gede tahunnya, push head
 			temp->next = head;
+			head->prev = temp;
 			head = temp;
 		}
 		else if(temp->year <= tail->year){
-			tail->next = temp;
+			//Kalo sama atau lebih kecil tahunnya, push tail
 			temp->prev = tail;
+			tail->next = temp;
 			tail = temp;
 		}
 		else{
+			//Loop sampai curr year lebih kecil dari temp
 			curr = head;
 			while(curr->year >= temp->year){
 				curr = curr->next;
 			}
 			//prev temp curr
+			//2012 2007 2005
 			temp->next = curr;
 			temp->prev = curr->prev;
 			curr->prev->next = temp;
@@ -49,12 +55,13 @@ void push(char name[], char city[], int year){
 
 struct Event pop(){
 	struct Event deleted = {"NULL", "NULL", -1};
-	if(!head){
+	if(head == NULL){
 		return deleted;
+//		return NULL;
 	}
 	else{
 		struct Event deleted = *tail;
-		if(!head->next){
+		if(head->next == NULL){
 			free(head);
 			head = tail = NULL;
 		}
@@ -112,11 +119,11 @@ int main(){
 				
 			case 2:
 				int length;
-				do{
-					printf("Input event name [8-30]: ");
+//				do{
+					printf("Input event name: ");
 					scanf("%[^\n]", &name); getchar();	
 					length = strlen(name);
-				}while(length<8||length>30);
+//				}while(length<8||length>30);
 				
 				do{
 					printf("Input event year [2000-2015]: ");
@@ -146,9 +153,9 @@ int main(){
 				struct Event deleted = pop();
 				printf("Removed Data : \n");
 //				if(deleted){
-					printf("Event Name : %s\n", deleted.name);
-					printf("Event City : %s\n", deleted.city);
-					printf("Event Year : %d\n", deleted.year);	
+				printf("Event Name : %s\n", deleted.name);
+				printf("Event City : %s\n", deleted.city);
+				printf("Event Year : %d\n", deleted.year);	
 //				}
 //				else{
 //					printf("There is no event available...\n");
