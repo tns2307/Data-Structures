@@ -57,7 +57,6 @@ struct Event pop(){
 	struct Event deleted = {"NULL", "NULL", -1};
 	if(head == NULL){
 		return deleted;
-//		return NULL;
 	}
 	else{
 		struct Event deleted = *tail;
@@ -119,11 +118,11 @@ int main(){
 				
 			case 2:
 				int length;
-//				do{
+				do{
 					printf("Input event name: ");
 					scanf("%[^\n]", &name); getchar();	
 					length = strlen(name);
-//				}while(length<8||length>30);
+				}while(length<8||length>30);
 				
 				do{
 					printf("Input event year [2000-2015]: ");
@@ -152,14 +151,9 @@ int main(){
 			case 3:
 				struct Event deleted = pop();
 				printf("Removed Data : \n");
-//				if(deleted){
 				printf("Event Name : %s\n", deleted.name);
 				printf("Event City : %s\n", deleted.city);
 				printf("Event Year : %d\n", deleted.year);	
-//				}
-//				else{
-//					printf("There is no event available...\n");
-//				}
 				getchar();
 				break;
 		}
