@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Song{
+	char title[50];
+	struct Song *next;
+}*head, *tail, *curr;
+
+void push_back(char title[]){
+	struct Song *temp = (struct Song*)malloc(sizeof(struct Song));
+	strcpy(temp->title, title);
+	temp->next = NULL;
+	if(!head){
+		head = tail = temp;
+	}
+	else{
+		tail->next = temp;
+		tail = temp;
+	}
+}
+
+void pop_front(){
+	if(!head) return;
+	curr = head;
+	head = head->next;
+	free(curr);
+}
+
+void view(){
+	if(!head){
+		 printf("Oh no.. The queue is empty..\n"); return;	
+	}
+	int n = 0;
+	curr = head;
+	while(curr){
+		printf("%2d) %s\n", ++n, curr->title);
+		curr = curr->next;
+	}
+}
+
+bool is_valid_music_number(int n){
+	if (n < 1||n > 10){
+		printf("ERROR: The music number must be between 1 and 10!\n");
+		return false;
+	}
+	return true;
+}
+
+int main(){
+	char song[][50] = {
+		"IDGAF - Dua Lipa",
+		"FRIENDS - Marshmello, Anne-Marie",
+		"The Middle - Zedd, Maren Morris, Grey",
+		"Best Part - H.E.R., Daniel Caesar",
+		"All The Stars (with SZA) - Kendrick Lamar, LZA",
+		"Wolves - Selena Gomez, Marshmello",
+		"God's Plan - Drake",
+		"Rewrite The Stars - Zac Efron, Zendaya",
+		"Havana - Camila Cabello, Young Thug",
+		"Perfect - Ed Sheeran"
+	};
+	int menu, music_num;
+
+	do{
+		system("cls");
+		printf("SONG LIST\n");
+		for (int i = 0; i < 10; i++){
+			printf("%2d) %s\n", i+1, song[i]);
+		}
+		printf("\nNEXT IN QUEUE\n");
+		view();
+		printf("\nMAIN MENU\n");
+		printf ("1. Add Music Into Queue\n"
+				"2. Next Music\n"
+				"3. Clear Queue\n"
+				"4. Exit\n");
+		do{
+			printf("Input your choice: ");
+			scanf("%d", &menu); getchar();
+		}while(menu < 1||menu > 4);
+		printf("\n");
+		switch(menu){
+			case 1:
+				do{
+					printf("What music number will be added into the queue [1..10] ? ");
+					scanf("%d", &music_num); getchar();
+				}while(!is_valid_music_number(music_num));
+				push_back(song[music_num-1]);
+				printf("The music \"%s\" is added to the queue!\n", song[music_num-1]);
+				getchar();
+				break;
+			case 2:
+				if(!head){
+					printf("Put some music into the queue first!\n");
+				}
+				else{
+					printf("Now Playing: %s\n", head->title);
+					printf("Press ANY KEY to STOP playing the music!\n");
+					pop_front();
+				}
+				getchar();
+				break;
+			case 3:
+				if(!head){
+					printf("Put some music into the queue first!\n");
+				}
+				else{
+					while(head){
+						pop_front();
+					}
+					printf("Your music queue has been cleared!\n");
+				}
+				getchar();
+				break;
+		}
+	}while(menu != 4);
+	return 0;
+}
