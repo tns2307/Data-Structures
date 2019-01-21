@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define SIZE 5
+
+struct Data{
+	char name[50]; // key
+	int age;
+	struct Data *prev, *next;
+}*curr;
+Data hasilPop;
+
+struct LL{
+	struct Data *head, *tail;
+};
+LL table[SIZE];
+
+int hash(char name[]){
+	return strlen(name) % SIZE;
+}
+
+struct Data *newData(char name[], int age){
+	struct Data *temp = (struct Data*)malloc(sizeof(struct Data));
+	strcpy(temp->name, name);
+	temp->age = age;
+	temp->prev = temp->next = NULL;
+	return temp;
+}
+
+void push(char name[], int age){
+	int index = hash(name);
+	struct Data *temp = newData(name, age);
+	if (!table[index].head){
+		table[index].head = table[index].tail = temp;
+	}
+	else{
+		table[index].tail->next = temp;
+		temp->prev = table[index].tail;
+		table[index].tail = temp;
+	}
+}
+
+struct Data *search(char name[]){
+	int index = hash(name);
+	//search linked list biasa
+	curr = table[index].head;
+	while(curr){
+		if (strcmp(curr->name, name) == 0){
+			return curr;
+		}
+		curr = curr->next;
+	}
+	return NULL;
+}
+
+void pop(char name[]){
+	int index = hash(name);
+	struct Data *dataPop = search(name);
+	
+	if(!dataPop){
+		strcpy(hasilPop.name, "NULL");
+		hasilPop.age = -1;
+		return;	
+	}
+	else{
+		hasilPop = *dataPop;
+		//Data cuma 1
+		if (!table[index].head->next){
+			free(table[index].head);
+			table[index].head = table[index].tail = NULL;
+		}
+		//Data di head
+		else if (strcmp(table[index].head->name, name) == 0){
+			curr = table[index].head;
+			table[index].head = table[index].head->next;
+			free(curr);
+			table[index].head->prev = NULL;
+		}
+		//Data di tail
+		else if (strcmp(table[index].tail->name, name) == 0){
+			table[index].tail = table[index].tail->prev;
+			free(table[index].tail->next);
+			table[index].tail->next = NULL;
+		}
+		//Data di tengah
+		else{
+			struct Data *prev;
+			curr = table[index].head;
+			while(curr != table[index].tail){
+				if (strcmp(curr->name, name) == 0){
+					break;
+				}
+				prev = curr;
+				curr = curr->next;
+			}
+			prev->next = curr->next;
+			curr->next->prev = prev;
+			free(curr);	
+		}
+	}
+}
+
+void update(char name[], int age){
+	Data *data = search(name);
+	if(!data) return;
+	data->age = age;
+}
+
+void view(){
+	for (int i = 0; i < SIZE; i++){
+		printf("%d ->  ", i);
+		curr = table[i].head;
+		while(curr){
+			printf("%s %d ", curr->name, curr->age);
+			curr = curr->next;
+		}
+		puts("");
+	}
+}
+
+int main(){
+	push("Andi", 18);
+	push("Budi", 20);
+	push("Alex", 15);
+	push("Sayur Kol", 22);
+	
+	view();
+	struct Data *test = search("Sayur Kol");
+	if (test) printf("Ketemu %s\n", test->name);
+	else printf("Tidak ketemu\n");
+	
+	puts("");
+	pop("Alex");
+	printf("Hasil Pop : %s %d\n", hasilPop.name, hasilPop.age);
+	
+	pop("Terkejut");
+	if(hasilPop.age == -1){
+		printf("Pop ga ketemu hasil\n");
+	}
+	else{
+		printf("Hasil Pop : %s %d\n", hasilPop.name, hasilPop.age);	
+	}
+	
+	pop("Andi");
+	printf("Hasil Pop : %s %d\n", hasilPop.name, hasilPop.age);
+	
+	puts("");
+	view();
+	
+	puts("");
+	update("Budi", 999);
+	view();
+	return 0;
+}
