@@ -55,6 +55,7 @@ void pop(char name[]){
 	int index = hash(name);
 	struct Data *popData = search(name);
 	if(!popData){
+		printf("Data is not found!\n");
 		return;
 	}
 	struct Data deleted = *popData;
@@ -84,7 +85,10 @@ void pop(char name[]){
 void update(char name[], int age){
 	struct Data *temp = search(name);
 	
-	if(!temp) return;
+	if(!temp){
+		printf("Data is not found!\n");
+		return;	
+	} 
 	
 	temp->age = age;
 }
