@@ -8,8 +8,12 @@ struct Data{
 	struct Data *next;
 }*head, *tail, *curr;
 
+struct Data* generateMemorySpace(){
+	return (struct Data*)malloc(sizeof(struct Data));
+}
+
 struct Data *createNode(char name[], int duration){
-	struct Data *temp = (struct Data*)malloc(sizeof(struct Data));
+	struct Data *temp = generateMemorySpace();
 	strcpy(temp->name, name);
 	temp->duration = duration;
 	temp->next=NULL;
